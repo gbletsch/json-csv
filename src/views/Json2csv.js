@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-const writeFileP = require('write-file-p')
 
 class Json2csv extends Component {
   constructor (props) {
     super(props)
     this.state = {
       jsonCode: '',
+      jsonFilepath: '',
       csvCode: ''
     }
   }
@@ -15,6 +15,16 @@ class Json2csv extends Component {
     state.jsonCode = ''
     state.csvCode = ''
     this.setState(state)
+  }
+
+  handleChange (e) {
+    switch (e.target.id) {
+      case 'jsonFilepath':
+        console.log(e.target.value)
+        break
+      default:
+        break
+    }
   }
 
   handleChangeJson (e) {
@@ -46,10 +56,17 @@ class Json2csv extends Component {
   }
 
   handleClick (e) {
-    const state = this.state
-    writeFileP('$home/gui/Área de Trabalho/output.txt', state.csvCode, (err, data) => {
-      console.log(err || data)
-    })
+    switch (e.target.id) {
+      case 'uploadJson':
+        this.uploadFile()
+        break
+      default:
+        break
+    }
+  }
+
+  uploadFile (e) {
+    console.log('upload File')
   }
 
   render () {
@@ -58,16 +75,43 @@ class Json2csv extends Component {
         <h1>JSON 2 CSV</h1>
         <div className='row'>
           <div className='col'>
-            <form onSubmit={(e) => this.handleSubmitJson(e)} onReset={() => this.handleReset()}>
+            <form
+              onSubmit={(e) => this.handleSubmitJson(e)}
+              onReset={() => this.handleReset()}
+            >
               <label>JSON text:</label><br />
-              <textarea
-                id='jsonCode'
-                onChange={(e) => this.handleChangeJson(e)}
-                rows='10'
-                cols='45'
-                placeholder='Paste JSON code here.'
-                value={this.state.jsonCode}
-              /><br />
+
+              <div className='row col-11 col-md-7 col-lg-6 col-xl-11 input-group mb-3'>
+                <input
+                  id='jsonFilepath'
+                  type='text'
+                  className='form-control'
+                  placeholder='JSON filepath'
+                  onChange={(e) => this.handleChange(e)}
+                  // aria-label="Recipient's username"
+                  // aria-describedby='basic-addon2'
+                />
+                <div className='input-group-append'>
+                  <button
+                    className='btn btn-secondary'
+                    type='button'
+                    id='uploadJson'
+                    onClick={(e) => this.handleClick(e)}
+                  >
+                      Upload
+                  </button>
+                </div>
+              </div>
+              <div className='row col-11'>
+                <textarea
+                  id='jsonCode'
+                  onChange={(e) => this.handleChangeJson(e)}
+                  rows='10'
+                  cols='45'
+                  placeholder='Paste JSON code here.'
+                  value={this.state.jsonCode}
+                />
+              </div>
               <div className='row'>
                 <div className='col-4'>
                   <input className='btn btn-secondary' type='submit' value='Convert to CSV' />
@@ -89,8 +133,10 @@ class Json2csv extends Component {
                 value={this.state.csvCode}
                 readOnly
               />
-              <div className='container row'>
-                <a className='btn btn-secondary' download='output.csv' href={ 'data:application/octet-stream,' + this.state.csvCode }>Save CSV file</a>
+              <div className='row'>
+                <div className='col'>
+                  <a className='btn btn-secondary' download='output.csv' href={'data:application/octet-stream,' + this.state.csvCode}>Save CSV file</a>
+                </div>
               </div>
             </form>
           </div>
