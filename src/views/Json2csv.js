@@ -68,8 +68,14 @@ class Json2csv extends Component {
                 placeholder='Paste JSON code here.'
                 value={this.state.jsonCode}
               /><br />
-              <input type='submit' value='Convert to CSV' />
-              <input type='reset' value='Reset' />
+              <div className='row'>
+                <div className='col-4'>
+                  <input className='btn btn-secondary' type='submit' value='Convert to CSV' />
+                </div>
+                <div className='col-3'>
+                  <input className='btn btn-secondary' type='reset' value='Reset' />
+                </div>
+              </div>
             </form>
           </div>
           <div className='col'>
@@ -83,7 +89,9 @@ class Json2csv extends Component {
                 value={this.state.csvCode}
                 readOnly
               />
-              {/* <input type='button' id='saveCsvButton' value='Save CSV file' onClick={(e) => this.handleClick(e)} /> */}
+              <div className='container row'>
+                <a className='btn btn-secondary' download='output.csv' href={ 'data:application/octet-stream,' + this.state.csvCode }>Save CSV file</a>
+              </div>
             </form>
           </div>
         </div>
