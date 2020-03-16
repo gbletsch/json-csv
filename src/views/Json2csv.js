@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+const writeFileP = require('write-file-p')
 
 class Json2csv extends Component {
   constructor (props) {
@@ -7,6 +8,13 @@ class Json2csv extends Component {
       jsonCode: '',
       csvCode: ''
     }
+  }
+
+  handleReset () {
+      const state = this.state
+      state.jsonCode = ''
+      state.csvCode = ''
+      this.setState(state)
   }
 
   handleChangeJson (e) {
@@ -37,11 +45,18 @@ class Json2csv extends Component {
     this.setState(state)
   }
 
+  handleClick (e) {
+    const state = this.state
+    writeFileP('$home/gui/Área de Trabalho/output.txt', state.csvCode, (err, data) => {
+      console.log(err || data)
+    })
+  }
+
   render () {
     return (
       <div className='jumbotron'>
         <h1>JSON 2 CSV</h1>
-        <form onSubmit={(e) => this.handleSubmitJson(e)}>
+        <form onSubmit={(e) => this.handleSubmitJson(e)} onReset={() => this.handleReset()}>
           <label>JSON text:</label><br />
           <textarea
             id='jsonCode'
@@ -52,6 +67,7 @@ class Json2csv extends Component {
             value={this.state.jsonCode}
           /><br />
           <input type='submit' value='Convert to CSV' />
+          <input type='reset' value='Reset' />
         </form>
         <form>
           <label>CSV text:</label><br />
@@ -63,6 +79,7 @@ class Json2csv extends Component {
             value={this.state.csvCode}
             readOnly
           />
+          <input type='button' id='saveCsvButton' value='Save CSV file' onClick={(e) => this.handleClick(e)} />
         </form>
       </div>
     )
