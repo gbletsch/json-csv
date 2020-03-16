@@ -11,10 +11,10 @@ class Json2csv extends Component {
   }
 
   handleReset () {
-      const state = this.state
-      state.jsonCode = ''
-      state.csvCode = ''
-      this.setState(state)
+    const state = this.state
+    state.jsonCode = ''
+    state.csvCode = ''
+    this.setState(state)
   }
 
   handleChangeJson (e) {
@@ -56,31 +56,37 @@ class Json2csv extends Component {
     return (
       <div className='jumbotron'>
         <h1>JSON 2 CSV</h1>
-        <form onSubmit={(e) => this.handleSubmitJson(e)} onReset={() => this.handleReset()}>
-          <label>JSON text:</label><br />
-          <textarea
-            id='jsonCode'
-            onChange={(e) => this.handleChangeJson(e)}
-            rows='10'
-            cols='45'
-            placeholder='Paste JSON code here.'
-            value={this.state.jsonCode}
-          /><br />
-          <input type='submit' value='Convert to CSV' />
-          <input type='reset' value='Reset' />
-        </form>
-        <form>
-          <label>CSV text:</label><br />
-          <textarea
-            id='csvCode'
-            rows='10'
-            cols='45'
-            placeholder='CSV code here.'
-            value={this.state.csvCode}
-            readOnly
-          />
-          <input type='button' id='saveCsvButton' value='Save CSV file' onClick={(e) => this.handleClick(e)} />
-        </form>
+        <div className='row'>
+          <div className='col'>
+            <form onSubmit={(e) => this.handleSubmitJson(e)} onReset={() => this.handleReset()}>
+              <label>JSON text:</label><br />
+              <textarea
+                id='jsonCode'
+                onChange={(e) => this.handleChangeJson(e)}
+                rows='10'
+                cols='45'
+                placeholder='Paste JSON code here.'
+                value={this.state.jsonCode}
+              /><br />
+              <input type='submit' value='Convert to CSV' />
+              <input type='reset' value='Reset' />
+            </form>
+          </div>
+          <div className='col'>
+            <form>
+              <label>CSV text:</label><br />
+              <textarea
+                id='csvCode'
+                rows='10'
+                cols='45'
+                placeholder='CSV code here.'
+                value={this.state.csvCode}
+                readOnly
+              />
+              {/* <input type='button' id='saveCsvButton' value='Save CSV file' onClick={(e) => this.handleClick(e)} /> */}
+            </form>
+          </div>
+        </div>
       </div>
     )
   }
