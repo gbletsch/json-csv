@@ -5,7 +5,7 @@ class Json2csv extends Component {
     super(props)
     this.state = {
       jsonCode: '',
-      jsonFilepath: '',
+      jsonFile: '',
       csvCode: ''
     }
   }
@@ -18,19 +18,29 @@ class Json2csv extends Component {
   }
 
   handleChange (e) {
+    const state = this.state
     switch (e.target.id) {
       case 'jsonFilepath':
-        console.log(e.target.value)
+        state.jsonFilepath = e.target.value
+        break
+      case 'jsonCode':
+        state.jsonCode = e.target.value
+        state.csvCode = ''
+        break
+      case 'jsonFiles':
+        this.getFileList(e)
         break
       default:
+        console.log(e.target.id)
         break
     }
+    this.setState(state)
   }
 
-  handleChangeJson (e) {
+  getFileList (e) {
     const state = this.state
-    state.jsonCode = e.target.value
-    state.csvCode = ''
+    const files = e.target.files
+    state.jsonFile = files[0]
     this.setState(state)
   }
 
@@ -48,7 +58,7 @@ class Json2csv extends Component {
         state.csvCode += '\n' + Object.values(row).toString()
       })
     } catch (error) {
-      alert('JSON inválido')
+      window.alert('JSON inválido')
       state.jsonCode = ''
       state.csvCode = ''
     }
@@ -57,16 +67,52 @@ class Json2csv extends Component {
 
   handleClick (e) {
     switch (e.target.id) {
-      case 'uploadJson':
-        this.uploadFile()
+      case 'readJsonFile':
+        this.readJsonFile()
         break
       default:
+        console.warn(e.target.id)
         break
     }
   }
 
-  uploadFile (e) {
-    console.log('upload File')
+  readJsonFile () {
+    var state = this.state
+    const file = state.jsonFile
+
+    var reader = new window.FileReader()
+    // file reading started
+    reader.addEventListener('loadstart', function () {
+      console.log('File reading started')
+    })
+
+    // file reading finished successfully
+    reader.addEventListener('load', function (e) {
+      var text = e.target.result
+
+      // contents of the file
+      console.log(text)
+      state.jsonCode = text
+    })
+
+    reader.onloadend = () => {
+      this.setState(state)
+    }
+
+    // file reading failed
+    reader.addEventListener('error', function () {
+      alert('Error : Failed to read file')
+    })
+
+    // file read progress
+    reader.addEventListener('progress', function (e) {
+      if (e.lengthComputable === true) {
+        var percent_read = Math.floor((e.loaded / e.total) * 100)
+        console.log(percent_read + '% read')
+      }
+    })
+    reader.readAsText(file)
+    console.log(state)
   }
 
   render () {
@@ -80,35 +126,32 @@ class Json2csv extends Component {
               onReset={() => this.handleReset()}
             >
               <label>JSON text:</label><br />
-
               <div className='row col-11 col-md-7 col-lg-6 col-xl-11 input-group mb-3'>
                 <input
-                  id='jsonFilepath'
-                  type='text'
-                  className='form-control'
-                  placeholder='JSON filepath'
+                  type='file'
+                  className='btn btn-secondary mb-3'
+                  id='jsonFiles'
+                  name='jsonFiles[]'
+                  accept='.json'
                   onChange={(e) => this.handleChange(e)}
-                  // aria-label="Recipient's username"
-                  // aria-describedby='basic-addon2'
+                  // multiple
                 />
-                <div className='input-group-append'>
-                  <button
-                    className='btn btn-secondary'
-                    type='button'
-                    id='uploadJson'
-                    onClick={(e) => this.handleClick(e)}
-                  >
-                      Upload
-                  </button>
-                </div>
+                <input
+                  type='button'
+                  value='Load file'
+                  id='readJsonFile'
+                  onClick={(e) => this.handleClick(e)}
+                />
+                <output id='jsonFile' />
+
               </div>
               <div className='row col-11'>
                 <textarea
                   id='jsonCode'
-                  onChange={(e) => this.handleChangeJson(e)}
+                  onChange={(e) => this.handleChange(e)}
                   rows='10'
                   cols='45'
-                  placeholder='Paste JSON code here.'
+                  placeholder='or paste JSON code here.'
                   value={this.state.jsonCode}
                 />
               </div>
