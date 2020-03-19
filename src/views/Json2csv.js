@@ -7,7 +7,7 @@ class Json2csv extends Component {
       jsonCode: '',
       jsonFile: '',
       csvCode: '',
-      saveCsvFilename: ''
+      saveCsvFilename: 'output.csv'
     }
   }
 
@@ -15,6 +15,8 @@ class Json2csv extends Component {
     const state = this.state
     state.jsonCode = ''
     state.csvCode = ''
+    state.saveCsvFilename = 'output.csv'
+    state.jsonFile = ''
     this.setState(state)
   }
 
@@ -106,11 +108,35 @@ class Json2csv extends Component {
     }
   }
 
-  componentDidUpdate () {
-    console.log(this.state)
-  }
-
   render () {
+    function SaveCsvBtn (props) {
+      const btnText = 'Save CSV file'
+      if (props.csvCode !== '') {
+        return (
+          <a
+            className='btn btn-secondary'
+            download={props.saveCsvFilename}
+            href={'data:application/octet-stream,' + props.csvCode}
+          >
+            {btnText}
+          </a>
+        )
+      } else {
+        return (
+          <button
+            className='btn btn-secondary'
+            onClick={(e) => {
+              window.alert('Empty CSV code')
+              e.preventDefault()
+            }}
+            id='emptySaveCsvBtn'
+          >
+            {btnText}
+          </button>
+        )
+      }
+    }
+
     return (
       <div className='jumbotron'>
         <h1>JSON 2 CSV</h1>
@@ -181,27 +207,12 @@ class Json2csv extends Component {
                     onChange={(e) => this.handleChange(e)}
                   />
                   <div className='input-group-append'>
-                    <a
-                      className='btn btn-secondary'
-                      download={this.state.saveCsvFilename}
-                      href={'data:application/octet-stream,' + this.state.csvCode}
-                    >
-                      Save CSV file
-                    </a>
+                    <SaveCsvBtn
+                      csvCode={this.state.csvCode}
+                      saveCsvFilename={this.state.saveCsvFilename}
+                    />
                   </div>
                 </div>
-                {/* <div className='col'>
-                  <input type='text' placeholder='insert path to save csv file' />
-                </div>
-                <div className='col'>
-                  <a
-                    className='btn btn-secondary'
-                    download='output.csv'
-                    href={'data:application/octet-stream,' + this.state.csvCode}
-                  >
-                    Save CSV file
-                  </a>
-                </div> */}
               </div>
             </form>
           </div>
