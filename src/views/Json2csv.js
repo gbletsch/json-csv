@@ -81,38 +81,21 @@ class Json2csv extends Component {
     const file = state.jsonFile
 
     var reader = new window.FileReader()
-    // file reading started
-    reader.addEventListener('loadstart', function () {
-      console.log('File reading started')
-    })
-
-    // file reading finished successfully
-    reader.addEventListener('load', function (e) {
-      var text = e.target.result
-
-      // contents of the file
-      console.log(text)
-      state.jsonCode = text
-    })
-
+    reader.onload = (e) => {
+      state.jsonCode = e.target.result
+    }
     reader.onloadend = () => {
       this.setState(state)
     }
+    reader.onerror = (err) => {
+      console.warn(err)
+    }
 
-    // file reading failed
-    reader.addEventListener('error', function () {
-      alert('Error : Failed to read file')
-    })
-
-    // file read progress
-    reader.addEventListener('progress', function (e) {
-      if (e.lengthComputable === true) {
-        var percent_read = Math.floor((e.loaded / e.total) * 100)
-        console.log(percent_read + '% read')
-      }
-    })
-    reader.readAsText(file)
-    console.log(state)
+    try {
+      reader.readAsText(file)
+    } catch (error) {
+      if (error) window.alert('Please select a valid file')
+    }
   }
 
   render () {
